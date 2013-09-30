@@ -1,0 +1,32 @@
+{
+  "name": "bigpipe-watch",
+  "version": "0.0.1",
+  "description": "Server side bigpipe plugin to watch file changes during development.",
+  "main": "index.js",
+  "dependencies": {
+    "fs.notify": "0.0.x"
+  },
+  "devDependencies": {
+    "chai": "1.8.x",
+    "mocha": "1.13.x",
+    "pre-commit": "0.0.x",
+    "bigpipe": "git://github.com/3rd-Eden/bigpipe.git#master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Moveo/bigpipe-watch.git"
+  },
+  "scripts": {
+    "test": "NODE_ENV=testing ./node_modules/.bin/mocha $(find test -name '*.test.js')"
+  },
+  "keywords": [
+    "Bigpipe",
+    "plugin",
+    "development",
+    "file",
+    "watch",
+    "reload"
+  ],
+  "author": "Martijn Swaagman",
+  "license": "MIT"
+}
