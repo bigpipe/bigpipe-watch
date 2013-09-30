@@ -10,5 +10,5 @@ describe('Bigpipe static content delivery plugin', function () {
     , server = Pipe.createServer(1337, {
         public: __dirname + '/fixtures',
         dist: '/tmp/dist'
-      }).use('content', content);
+      }).use(watch);
 });

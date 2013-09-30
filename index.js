@@ -3,9 +3,7 @@
 //
 // Required modules.
 //
-var fs = require('fs')
-  , watch = require('fs.notify')
-  , path = require('path');
+var Notify = require('fs.notify');
 
 //
 // Plugin name.
@@ -21,4 +19,25 @@ exports.name = 'watch';
  * @api public
  */
 exports.server = function server(bigpipe, options) {
+  var files = Object.keys(bigpipe.compiler.alias)
+    , notifications = new Notify(files);
+
+  notifications.on('change', function change(file) {
+    files.forEach(function loopFiles(path) {
+      if (~path.indexOf(file)) {
+        //
+        // Delete the content from cache and prefetch again.
+        //
+        delete bigpipe.temper.file[path];
+        delete bigpipe.temper.compiled[path];
+
+        bigpipe.temper.prefetch(path);
+      }
+    });
+
+    //
+    // Notify the developer of changes and reloaded files.
+    //
+    console.log('File changes detected, refreshing paths containing: ' + file);
+  });
 };
