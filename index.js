@@ -3,7 +3,8 @@
 //
 // Required modules.
 //
-var Notify = require('fs.notify');
+var Notify = require('fs.notify')
+  , fs = require('fs');
 
 //
 // Plugin name.
@@ -46,15 +47,11 @@ function debounce(fn, wait) {
  * @api public
  */
 exports.server = function server(bigpipe, options) {
-  var files = Object.keys(bigpipe.temper.file)
-    , notifications;
-
-  //
-  // Also add compiler cache items.
-  //
-  Object.keys(bigpipe.compiler.alias).forEach(function loopCompilerCache(item) {
-    if (!~files.indexOf(item)) files.push(item);
-  });
+  var notifications = new Notify
+    , files = {
+        temper: Object.keys(bigpipe.temper.file),
+        compiler: Object.keys(bigpipe.compiler.alias)
+      };
 
   /**
    * Check cache and prefetch if the file is part of the compiler.
@@ -63,23 +60,34 @@ exports.server = function server(bigpipe, options) {
    * @api private
    */
   function change(file) {
-    files.forEach(function loopCompiler(path) {
-      if (~path.indexOf(file)) {
-        delete bigpipe.temper.file[path];
-        delete bigpipe.temper.compiled[path];
+    console.log('\nFile changes detected\n'.green);
 
-        bigpipe.temper.prefetch(path);
-      }
+    files.temper.forEach(function loopTemper(path) {
+      if (!~path.indexOf(file)) return;
 
-      // TODO add compiler stuff.
+      delete bigpipe.temper.file[path];
+      delete bigpipe.temper.compiled[path];
+      bigpipe.temper.prefetch(path);
+
+      console.log(' -- refreshing temper cache using: ' + path);
     });
 
-    console.log('File changes detected, refreshing compiler cache using: ' + file);
+    files.compiler.forEach(function loopCompiler(path) {
+      if (!~path.indexOf(file)) return;
+
+      bigpipe.compiler.put(path, function compiled(error, dest) {
+        if (error) return console.error(error);
+
+        console.log(' -- refreshing compiler cache using: ' + path);
+      });
+    });
   }
 
   //
   // Notify the developer of changes and reload files.
   //
-  notifications = new Notify(files);
-  notifications.on('change', debounce(change, 100));
+  notifications
+    .add(files.temper)
+    .add(files.compiler)
+    .on('change', debounce(change, 100));
 };
