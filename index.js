@@ -19,7 +19,7 @@ exports.name = 'watch';
  * @param {Number} wait milliseconds
  * @api private
  */
-function debounce(fn, wait) {
+exports.debounce = function debounce(fn, wait) {
   return function defer() {
     var context = this
       , args = arguments
@@ -36,7 +36,7 @@ function debounce(fn, wait) {
     if (!timeout) timeout = setTimeout(later, wait);
     return result;
   };
-}
+};
 
 /**
  * Server side plugin to watch pages, pagelets and views for easy reloading
@@ -59,28 +59,28 @@ exports.server = function server(bigpipe, options) {
    * @param {String} file name
    * @api private
    */
-  function change(file) {
-    console.log('\nFile changes detected\n'.green);
+  function refresh(file) {
+    console.log('\nFile changes detected, refreshing pages and pagelets'.green);
 
     files.temper.forEach(function loopTemper(path) {
       if (!~path.indexOf(file)) return;
 
       delete bigpipe.temper.file[path];
       delete bigpipe.temper.compiled[path];
-      bigpipe.temper.prefetch(path);
 
-      console.log(' -- refreshing temper cache using: ' + path);
+      bigpipe.temper.prefetch(path);
+      console.log('  -- ' + file + ' changed');
     });
 
     files.compiler.forEach(function loopCompiler(path) {
       if (!~path.indexOf(file)) return;
 
-      bigpipe.compiler.put(path, function compiled(error, dest) {
+      bigpipe.compiler.put(path, function compiled(error) {
         if (error) return console.error(error);
-
-        console.log(' -- refreshing compiler cache using: ' + path);
       });
     });
+
+    bigpipe.emit('change', file);
   }
 
   //
@@ -89,5 +89,5 @@ exports.server = function server(bigpipe, options) {
   notifications
     .add(files.temper)
     .add(files.compiler)
-    .on('change', debounce(change, 100));
+    .on('change', exports.debounce(refresh, 100));
 };
