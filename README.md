@@ -13,7 +13,9 @@ reloaded into Bigpipe's internals.
 
 ## Features
 
--
+- Watches the files of both temper and compiler
+- Will utilize compiler to preprocess the files if required
+- Debounces file changes and refreshes
 
 ## Installation
 
