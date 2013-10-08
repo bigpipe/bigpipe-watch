@@ -20,16 +20,19 @@ exports.name = 'watch';
  * @api private
  */
 exports.debounce = function debounce(fn, wait) {
+  var timeout;
+
   return function defer() {
     var context = this
       , args = arguments
       , timestamp = Date.now()
-      , result, timeout;
+      , result;
 
     function later() {
       var last = Date.now() - timestamp;
       if (last < wait) return timeout = setTimeout(later, wait - last);
 
+      timeout = null;
       result = fn.apply(context, args);
     }
 
@@ -69,17 +72,15 @@ exports.server = function server(bigpipe, options) {
       delete bigpipe.temper.compiled[path];
 
       bigpipe.temper.prefetch(path);
-      console.log('  -- ' + file + ' changed');
     });
 
     files.compiler.forEach(function loopCompiler(path) {
       if (!~path.indexOf(file)) return;
 
-      bigpipe.compiler.put(path, function compiled(error) {
-        if (error) return console.error(error);
-      });
+      bigpipe.compiler.put(path);
     });
 
+    console.log('  -- '.blue + file.white + ' changed'.white);
     bigpipe.emit('change', file);
   }
 
