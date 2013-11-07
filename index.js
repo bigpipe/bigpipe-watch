@@ -4,7 +4,9 @@
 // Required modules.
 //
 var Notify = require('fs.notify')
-  , fs = require('fs');
+  , path = require('path')
+  , fs = require('fs')
+  , hooks;
 
 //
 // Plugin name.
@@ -41,19 +43,24 @@ exports.debounce = function debounce(fn, wait) {
   };
 };
 
+exports.hooks = hooks = {
+  'pipe.js': function rebuildPipe(path) {
+    this.compiler.bigPipe(fs.readFileSync(path, 'utf-8'));
+  }
+};
+
 /**
  * Server side plugin to watch pages, pagelets and views for easy reloading
  * during development.
  *
  * @param {Pipe} bigpipe instance
- * @param {Object} options
  * @api public
  */
-exports.server = function server(bigpipe, options) {
+exports.server = function server(bigpipe) {
   var notifications = new Notify
     , files = {
         temper: Object.keys(bigpipe.temper.file),
-        compiler: Object.keys(bigpipe.compiler.alias)
+        compiler: Object.keys(bigpipe.compiler.origin)
       };
 
   /**
@@ -71,12 +78,14 @@ exports.server = function server(bigpipe, options) {
       delete bigpipe.temper.file[path];
       delete bigpipe.temper.compiled[path];
 
+      if (file in hooks) return hooks[file].call(bigpipe);
       bigpipe.temper.prefetch(path);
     });
 
     files.compiler.forEach(function loopCompiler(path) {
       if (!~path.indexOf(file)) return;
 
+      if (file in hooks) return hooks[file].call(bigpipe, path);
       bigpipe.compiler.put(path);
     });
 
