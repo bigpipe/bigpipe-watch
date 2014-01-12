@@ -1,4 +1,4 @@
-# Bigpipe-watch
+# Watch
 
 [![Build
 Status](https://travis-ci.org/Moveo/bigpipe-watch.png)](https://travis-ci.org/Moveo/bigpipe-watch)
@@ -19,7 +19,7 @@ reloaded into Bigpipe's internals.
 
 ## Installation
 
-Bigpipe-watch is released in npm and can be installed using:
+The watch plugin is released to npm and can be installed using:
 
 ```bash
 npm install bigpipe-watch --save
