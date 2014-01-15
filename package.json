@@ -10,11 +10,11 @@
     "chai": "1.8.x",
     "mocha": "1.13.x",
     "pre-commit": "0.0.x",
-    "bigpipe": "git://github.com/3rd-Eden/bigpipe.git#master"
+    "bigpipe": "git://github.com/bigpipe/bigpipe.git#master"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Moveo/bigpipe-watch.git"
+    "url": "git://github.com/bigpipe/bigpipe-watch.git"
   },
   "scripts": {
     "test": "NODE_ENV=testing ./node_modules/.bin/mocha $(find test -name '*.test.js')"
