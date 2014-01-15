@@ -1,7 +1,7 @@
 # Watch
 
 [![Build
-Status](https://travis-ci.org/Moveo/bigpipe-watch.png)](https://travis-ci.org/Moveo/bigpipe-watch)
+Status](https://travis-ci.org/bigpipe/bigpipe-watch.png)](https://travis-ci.org/bigpipe/bigpipe-watch)
 [![NPM
 version](https://badge.fury.io/js/bigpipe-watch.png)](http://badge.fury.io/js/bigpipe-watch)
 
@@ -9,7 +9,7 @@ version](https://badge.fury.io/js/bigpipe-watch.png)](http://badge.fury.io/js/bi
 developing. As soon as a file is changed the content will be rediscovered and
 reloaded into Bigpipe's internals.
 
-[Bigpipe]: https://github.com/3rd-Eden/bigpipe
+[Bigpipe]: https://github.com/bigpipe/bigpipe
 
 ## Features
 
