@@ -4,6 +4,7 @@
 // Required modules.
 //
 var Notify = require('fs.notify')
+  , colors = require('colors')
   , path = require('path')
   , fs = require('fs')
   , hooks;

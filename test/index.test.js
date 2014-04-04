@@ -44,11 +44,11 @@ describe('Bigpipe static content delivery plugin', function () {
   });
 
   it('watches the files listed as alias of compiler', function (done) {
-    var toChange = __dirname + '/../node_modules/bigpipe/pagelets/diagnostics/diagnostic.jade';
+    var toChange = __dirname + '/../node_modules/bigpipe/pagelets/diagnostics/diagnostic.ejs';
 
     server.once('change', function (path) {
       expect(arguments.length).to.equal(1);
-      expect(path).to.equal('diagnostic.jade');
+      expect(path).to.equal('diagnostic.ejs');
       done();
     });
 
@@ -56,11 +56,11 @@ describe('Bigpipe static content delivery plugin', function () {
   });
 
   it('watches the files listed in temper', function (done) {
-    var toChange = __dirname + '/../node_modules/bigpipe/pages/500/500.jade';
+    var toChange = __dirname + '/../node_modules/bigpipe/pages/500/500.ejs';
 
     server.once('change', function (path) {
       expect(arguments.length).to.equal(1);
-      expect(path).to.equal('500.jade');
+      expect(path).to.equal('500.ejs');
       done();
     });
 

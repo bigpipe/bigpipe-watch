@@ -1,23 +1,28 @@
 {
   "name": "bigpipe-watch",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Server side bigpipe plugin to watch file changes during development.",
   "main": "index.js",
   "dependencies": {
-    "fs.notify": "0.0.x"
+    "fs.notify": "~0.0.4",
+    "colors": "~0.6.2"
   },
   "devDependencies": {
+    "bigpipe": "~0.3.0",
     "chai": "1.8.x",
+    "coveralls": "~2.8.0",
+    "istanbul": "~0.2.6",
     "mocha": "1.13.x",
-    "pre-commit": "0.0.x",
-    "bigpipe": "git://github.com/bigpipe/bigpipe.git#master"
+    "mocha-lcov-reporter": "~0.0.1",
+    "pre-commit": "~0.0.5"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/bigpipe/bigpipe-watch.git"
   },
   "scripts": {
-    "test": "NODE_ENV=testing ./node_modules/.bin/mocha $(find test -name '*.test.js')"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha $(find test -name '*.test.js')",
+    "coverage": "NODE_ENV=test ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha $(find test -name '*.test.js') --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js || true && rm -rf ./coverage"
   },
   "keywords": [
     "Bigpipe",

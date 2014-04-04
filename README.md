@@ -1,9 +1,8 @@
-# Watch
+# Watch [![Build Status][status]](https://travis-ci.org/bigpipe/plugin-watch) [![NPM version][npmimgurl]](http://badge.fury.io/js/bigpipe-watch) [![Coverage Status][coverage]](http://coveralls.io/r/bigpipe/plugin-watch?branch=master)
 
-[![Build
-Status](https://travis-ci.org/bigpipe/bigpipe-watch.png)](https://travis-ci.org/bigpipe/bigpipe-watch)
-[![NPM
-version](https://badge.fury.io/js/bigpipe-watch.png)](http://badge.fury.io/js/bigpipe-watch)
+[status]: https://travis-ci.org/bigpipe/plugin-watch.png
+[npmimgurl]: https://badge.fury.io/js/bigpipe-watch.png
+[coverage]: http://coveralls.io/repos/bigpipe/plugin-watch/badge.png?branch=master
 
 [Bigpipe] plugin that will watch added pages, pagelets and their views for easy
 developing. As soon as a file is changed the content will be rediscovered and
