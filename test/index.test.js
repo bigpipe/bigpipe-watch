@@ -22,33 +22,14 @@ describe('Bigpipe static content delivery plugin', function () {
     expect(watch).to.have.property('name', 'watch');
   });
 
-  it('exposes hooks config object', function () {
-    expect(watch).to.have.property('hooks');
-  });
-
-  it('hooks has pipe.js hook by default', function () {
-    expect(watch.hooks).to.have.property('pipe.js');
-    expect(watch.hooks['pipe.js']).to.be.a('function');
-  });
-
-  it('pipe.js hook calls compiler#bigPipe with content of filename on path', function () {
-    var temp = {
-      compiler: {
-        bigPipe: function(content) {
-          expect(content).to.include('--reporter spec');
-        }
-      }
-    };
-
-    watch.hooks['pipe.js'].call(temp, __dirname + '/mocha.opts');
-  });
-
   it('watches the files listed as alias of compiler', function (done) {
     var toChange = __dirname + '/../node_modules/bigpipe/pagelets/diagnostics/diagnostic.ejs';
 
-    server.once('change', function (path) {
-      expect(arguments.length).to.equal(1);
+    server.once('change', function (path, event, full) {
+      expect(arguments.length).to.equal(3);
       expect(path).to.equal('diagnostic.ejs');
+      expect(event).to.equal('change');
+      expect(full).to.include('node_modules/bigpipe/pagelets/diagnostics/diagnostic.ejs');
       done();
     });
 
@@ -58,9 +39,11 @@ describe('Bigpipe static content delivery plugin', function () {
   it('watches the files listed in temper', function (done) {
     var toChange = __dirname + '/../node_modules/bigpipe/pages/500/500.ejs';
 
-    server.once('change', function (path) {
-      expect(arguments.length).to.equal(1);
+    server.once('change', function (path, event, full) {
+      expect(arguments.length).to.equal(3);
       expect(path).to.equal('500.ejs');
+      expect(event).to.equal('change');
+      expect(full).to.include('node_modules/bigpipe/pages/500/500.ejs');
       done();
     });
 

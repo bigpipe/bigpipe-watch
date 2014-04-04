@@ -6,8 +6,7 @@
 var Notify = require('fs.notify')
   , colors = require('colors')
   , path = require('path')
-  , fs = require('fs')
-  , hooks;
+  , fs = require('fs');
 
 //
 // Plugin name.
@@ -44,12 +43,6 @@ exports.debounce = function debounce(fn, wait) {
   };
 };
 
-exports.hooks = hooks = {
-  'pipe.js': function rebuildPipe(path) {
-    this.compiler.bigPipe(fs.readFileSync(path, 'utf-8'));
-  }
-};
-
 /**
  * Server side plugin to watch pages, pagelets and views for easy reloading
  * during development.
@@ -57,48 +50,60 @@ exports.hooks = hooks = {
  * @param {Pipe} bigpipe instance
  * @api public
  */
-exports.server = function server(bigpipe) {
+exports.server = function server(bigpipe, options) {
   var notifications = new Notify
-    , files = {
-        temper: Object.keys(bigpipe.temper.file),
-        compiler: Object.keys(bigpipe.compiler.origin)
-      };
-
-  /**
-   * Check cache and prefetch if the file is part of the compiler.
-   *
-   * @param {String} file name
-   * @api private
-   */
-  function refresh(file) {
-    console.log('\nFile changes detected, refreshing pages and pagelets'.green);
-
-    files.temper.forEach(function loopTemper(path) {
-      if (!~path.indexOf(file)) return;
-
-      delete bigpipe.temper.file[path];
-      delete bigpipe.temper.compiled[path];
-
-      if (file in hooks) return hooks[file].call(bigpipe);
-      bigpipe.temper.prefetch(path);
-    });
-
-    files.compiler.forEach(function loopCompiler(path) {
-      if (!~path.indexOf(file)) return;
-
-      if (file in hooks) return hooks[file].call(bigpipe, path);
-      bigpipe.compiler.put(path);
-    });
-
-    console.log('  -- '.blue + file.white + ' changed'.white);
-    bigpipe.emit('change', file);
-  }
+    , tempers = [ bigpipe.temper ];
 
   //
-  // Notify the developer of changes and reload files.
+  // Keep track of all the temper instances for each individual pagelet.
   //
-  notifications
-    .add(files.temper)
-    .add(files.compiler)
-    .on('change', exports.debounce(refresh, 100));
+  bigpipe.on('transform::pagelet', function transform(pagelet) {
+    tempers.push(pagelet.temper);
+  });
+
+  //
+  // Wait till BigPipe emits listening. Compiler will have a collection of files
+  // to watch at that point.
+  //
+  bigpipe.once('listening', function addFiles() {
+    var assets = Object.keys(bigpipe.compiler.alias)
+      , views = Object.keys(bigpipe.temper.compiled);
+
+    /**
+     * Check cache and prefetch if the file is part of the compiler.
+     *
+     * @param {String} file name
+     * @api private
+     */
+    function refresh(file, event, full) {
+      views.forEach(function loopViews(path) {
+        if (path !== full) return;
+
+        tempers.forEach(function eachTemper(temper) {
+          delete temper.file[path];
+          delete temper.compiled[path];
+
+          temper.prefetch(path);
+        });
+      });
+
+      assets.forEach(function loopAssets(path) {
+        if (path !== full) return;
+
+        bigpipe.compiler.put(path);
+      });
+
+      bigpipe.emit('change', file, event, full);
+      console.log([
+        '[watch] detected content changes --'.blue,
+        file.white,
+        'changed'.white
+      ].join(' '));
+    }
+
+    //
+    // Notify the developer of changes and reload files.
+    //
+    notifications.add(assets).add(views).on('change', exports.debounce(refresh, 100));
+  });
 };
