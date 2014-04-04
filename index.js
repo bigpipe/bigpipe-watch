@@ -58,7 +58,7 @@ exports.server = function server(bigpipe, options) {
   // Keep track of all the temper instances for each individual pagelet.
   //
   bigpipe.on('transform::pagelet', function transform(pagelet) {
-    tempers.push(pagelet.temper);
+    if (pagelet.temper) tempers.push(pagelet.temper);
   });
 
   //

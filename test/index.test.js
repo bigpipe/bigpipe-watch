@@ -1,4 +1,4 @@
-describe('Bigpipe static content delivery plugin', function () {
+describe('Bigpipe watch plugin', function () {
   'use strict';
 
   var chai = require('chai');
@@ -8,10 +8,19 @@ describe('Bigpipe static content delivery plugin', function () {
     , fs = require('fs')
     , Pipe = require('bigpipe')
     , expect = chai.expect
-    , server = Pipe.createServer(1337, {
-        public: __dirname + '/fixtures',
-        dist: '/tmp/dist'
-      }).use(watch);
+    , server;
+
+  before(function (done) {
+    this.timeout(6E4);
+
+    server = Pipe.createServer(1337, {
+      public: __dirname + '/fixtures',
+      plugins: [ watch ],
+      dist: '/tmp/dist'
+    });
+
+    server.once('listening', done);
+  });
 
   it('exposes server side functionality', function () {
     expect(watch).to.have.property('server');

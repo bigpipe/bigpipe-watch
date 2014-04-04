@@ -1,6 +1,6 @@
 {
   "name": "bigpipe-watch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Server side bigpipe plugin to watch file changes during development.",
   "main": "index.js",
   "dependencies": {
