@@ -30,7 +30,7 @@ the plugin name is unique, e.g. `watch` by default.
 
 ```js
 // Usage after initialization
-var watch = require('watch')
+var watch = require('bigpipe-watch')
   , Pipe = require('bigpipe');
 
 var pipe = new Pipe(http.createServer(), {
@@ -41,7 +41,7 @@ var pipe = new Pipe(http.createServer(), {
 
 ```js
 // Usage through createServer options
-var watch = require('watch')
+var watch = require('bigpipe-watch')
   , Pipe = require('bigpipe');
 
 var pipe = Bigpipe.createServer(8080, {
