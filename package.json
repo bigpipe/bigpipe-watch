@@ -1,20 +1,20 @@
 {
   "name": "bigpipe-watch",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Server side bigpipe plugin to watch file changes during development.",
   "main": "index.js",
   "dependencies": {
-    "fs.notify": "~0.0.4",
-    "colors": "~0.6.2"
+    "fs.notify": "0.0.x",
+    "colors": "1.0.x"
   },
   "devDependencies": {
-    "bigpipe": "~0.3.0",
-    "chai": "1.8.x",
-    "coveralls": "~2.8.0",
-    "istanbul": "~0.2.6",
-    "mocha": "1.13.x",
-    "mocha-lcov-reporter": "~0.0.1",
-    "pre-commit": "~0.0.5"
+    "bigpipe": "1.0.x",
+    "chai": "1.10.x",
+    "coveralls": "2.11.x",
+    "istanbul": "0.3.x",
+    "mocha": "2.1.x",
+    "mocha-lcov-reporter": "0.0.x",
+    "pre-commit": "0.0.x"
   },
   "repository": {
     "type": "git",
