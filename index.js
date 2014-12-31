@@ -52,13 +52,14 @@ exports.debounce = function debounce(fn, wait) {
  */
 exports.server = function server(bigpipe, options) {
   var notifications = new Notify
-    , tempers = [ bigpipe.temper ];
+    , tempers = [ bigpipe._temper ];
 
   //
   // Keep track of all the temper instances for each individual pagelet.
   //
-  bigpipe.on('transform::pagelet', function transform(pagelet) {
-    if (pagelet.temper) tempers.push(pagelet.temper);
+  bigpipe.on('transform:pagelet:before', function transform(Pagelet, next) {
+    if (Pagelet._temper) tempers.push(Pagelet._temper);
+    next(null, Pagelet);
   });
 
   //
@@ -66,8 +67,8 @@ exports.server = function server(bigpipe, options) {
   // to watch at that point.
   //
   bigpipe.once('listening', function addFiles() {
-    var assets = Object.keys(bigpipe.compiler.alias)
-      , views = Object.keys(bigpipe.temper.compiled);
+    var assets = Object.keys(bigpipe._compiler.alias)
+      , views = Object.keys(bigpipe._temper.compiled);
 
     /**
      * Check cache and prefetch if the file is part of the compiler.
